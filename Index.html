@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetGuard - Sudizz Build</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #050810;
+    color: white;
+}
+
+/* ================= INTRO ================= */
+
+#intro {
+    position: fixed;
+    inset: 0;
+    background: #02040a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    z-index: 9999;
+    overflow: hidden;
+}
+
+.grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(#162033 1px, transparent 1px),
+        linear-gradient(90deg, #162033 1px, transparent 1px);
+    background-size: 45px 45px;
+    opacity: 0.35;
+    animation: gridMove 4s linear infinite;
+}
+
+@keyframes gridMove {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(45px);
+    }
+}
+
+.sb-logo {
+    width: 100px;
+    height: 100px;
+    border: 3px solid #00e5ff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    font-weight: bold;
+    color: #00e5ff;
+    box-shadow: 0 0 35px #00e5ff;
+    animation: pulse 1.5s infinite;
+    z-index: 2;
+}
+
+@keyframes pulse {
+    50% {
+        transform: scale(1.08);
+        box-shadow: 0 0 60px #00e5ff;
+    }
+}
+
+.sudizz {
+    margin-top: 25px;
+    font-size: 30px;
+    letter-spacing: 8px;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.build {
+    color: #00e5ff;
+    letter-spacing: 7px;
+    font-size: 18px;
+    margin-top: 5px;
+    z-index: 2;
+}
+
+.loading-text {
+    margin-top: 35px;
+    font-size: 12px;
+    color: #8fa3b8;
+    z-index: 2;
+}
+
+.loading {
+    width: 230px;
+    height: 5px;
+    background: #17202e;
+    margin-top: 12px;
+    border-radius: 10px;
+    overflow: hidden;
+    z-index: 2;
+}
+
+.loading-bar {
+    height: 100%;
+    width: 0%;
+    background: #00e5ff;
+    animation: load 3s linear forwards;
+}
+
+@keyframes load {
+    to {
+        width: 100%;
+    }
+}
+
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #00e5ff;
+    box-shadow: 0 0 20px #00e5ff;
+    animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+    from {
+        top: 0;
+    }
+    to {
+        top: 100%;
+    }
+}
+
+/* ================= APP ================= */
+
+#app {
+    display: none;
+    min-height: 100vh;
+    padding-bottom: 30px;
+}
+
+.header {
+    padding: 20px;
+    background: #0a101b;
+    border-bottom: 1px solid #1b293b;
+}
+
+.brand {
+    color: #00e5ff;
+    font-size: 13px;
+    letter-spacing: 3px;
+}
+
+.title {
+    font-size: 30px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.subtitle {
+    color: #8493a6;
+    margin-top: 5px;
+}
+
+/* ================= CARDS ================= */
+
+.container {
+    padding: 15px;
+    max-width: 700px;
+    margin: auto;
+}
+
+.card {
+    background: #0d1522;
+    border: 1px solid #1d2b3d;
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 15px;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 19px;
+}
+
+.status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.online {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.warning {
+    color: #f59e0b;
+}
+
+.danger {
+    color: #ef4444;
+}
+
+/* ================= SCORE ================= */
+
+.score {
+    text-align: center;
+    padding: 10px;
+}
+
+.score-number {
+    font-size: 55px;
+    font-weight: bold;
+    color: #00e5ff;
+}
+
+.score-label {
+    color: #8fa3b8;
+}
+
+/* ================= METRICS ================= */
+
+.metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.metric {
+    background: #111c2b;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.metric-name {
+    color: #8191a5;
+    font-size: 13px;
+}
+
+.metric-value {
+    font-size: 22px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+/* ================= BUTTON ================= */
+
+button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 10px;
+    background: #00bcd4;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* ================= DEVICES ================= */
+
+.device-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid #243244;
+}
+
+.device-row:last-child {
+    border-bottom: none;
+}
+
+.device-name {
+    font-weight: bold;
+}
+
+.device-ip {
+    color: #8191a5;
+    font-size: 12px;
+}
+
+/* ================= HISTORY ================= */
+
+.history-row {
+    background: #111c2b;
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 8px;
+}
+
+.history-time {
+    color: #8191a5;
+    font-size: 12px;
+}
+
+/* ================= BARS ================= */
+
+.bar {
+    height: 10px;
+    background: #202d3d;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 8px;
+}
+
+.bar-fill {
+    height: 100%;
+    width: 80%;
+    background: #00e5ff;
+}
+
+/* ================= FOOTER ================= */
+
+.footer {
+    text-align: center;
+    color: #536275;
+    font-size: 12px;
+    padding: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= SUDIZZ INTRO ================= -->
+
+<div id="intro">
+
+    <div class="grid"></div>
+    <div class="scan-line"></div>
+
+    <div class="sb-logo">SB</div>
+
+    <div class="sudizz">SUDIZZ</div>
+    <div class="build">BUILD</div>
+
+    <div class="loading-text">
+        INITIALIZING NETWORK SYSTEM
+    </div>
+
+    <div class="loading">
+        <div class="loading-bar"></div>
+    </div>
+
+</div>
+
+
+<!-- ================= MAIN APP ================= -->
+
+<div id="app">
+
+    <div class="header">
+        <div class="brand">SUDIZZ BUILD</div>
+        <div class="title">NETGUARD</div>
+        <div class="subtitle">
+            Network Diagnostic & Monitoring
+        </div>
+    </div>
+
+
+    <div class="container">
+
+        <!-- NETWORK STATUS -->
+
+        <div class="card">
+
+            <h2>🌐 Network Status</h2>
+
+            <div class="status">
+                <span>Connection</span>
+                <span class="online" id="connectionStatus">
+                    ONLINE
+                </span>
+            </div>
+
+            <br>
+
+            <div class="status">
+                <span>Network Type</span>
+                <span id="networkType">
+                    Wi-Fi / Hotspot
+                </span>
+            </div>
+
+        </div>
+
+
+        <!-- HEALTH SCORE -->
+
+        <div class="card score">
+
+            <div class="score-number" id="healthScore">
+                80
+            </div>
+
+            <div class="score-label">
+                NETWORK HEALTH SCORE
+            </div>
+
+        </div>
+
+
+        <!-- METRICS -->
+
+        <div class="card">
+
+            <h2>📡 Network Metrics</h2>
+
+            <div class="metrics">
+
+                <div class="metric">
+                    <div class="metric-name">
+                        Ping
+                    </div>
+                    <div class="metric-value" id="ping">
+                        -- ms
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-name">
+                        Packet Loss
+                    </div>
+                    <div class="metric-value" id="loss">
+                        -- %
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-name">
+                        Download
+                    </div>
+                    <div class="metric-value" id="download">
+                        -- Mbps
+                    </div>
+                </div>
+
+                <div class="metric">
+                    <div class="metric-name">
+                        Upload
+                    </div>
+                    <div class="metric-value" id="upload">
+                        -- Mbps
+                    </div>
+                </div>
+
+            </div>
+
+            <button onclick="runNetworkTest()">
+                🔍 RUN NETWORK TEST
+            </button>
+
+        </div>
+
+
+        <!-- DIAGNOSIS -->
+
+        <div class="card">
+
+            <h2>🧠 Smart Diagnosis</h2>
+
+            <p id="diagnosis">
+                Press network test to analyze your connection.
+            </p>
+
+        </div>
+
+
+        <!-- SIGNAL -->
+
+        <div class="card">
+
+            <h2>📶 Wi-Fi / Hotspot Signal</h2>
+
+            <div class="status">
+
+                <span>Signal Strength</span>
+
+                <span id="signal">
+                    Good
+                </span>
+
+            </div>
+
+            <div class="bar">
+                <div class="bar-fill"></div>
+            </div>
+
+            <p style="color:#8191a5;font-size:12px;">
+                Router/hotspot distance is only an estimate.
+                Walls and interference can affect the result.
+            </p>
+
+        </div>
+
+
+        <!-- CONNECTED DEVICES -->
+
+        <div class="card">
+
+            <h2>📱 Connected Devices</h2>
+
+            <div class="status">
+                <span>Detected Devices</span>
+
+                <span class="online" id="deviceCount">
+                    3
+                </span>
+            </div>
+
+            <div class="device-row">
+
+                <div>
+                    <div class="device-name">
+                        📱 This Device
+                    </div>
+
+                    <div class="device-ip">
+                        Local device
+                    </div>
+                </div>
+
+                <span class="online">
+                    ONLINE
+                </span>
+
+            </div>
+
+
+            <div class="device-row">
+
+                <div>
+                    <div class="device-name">
+                        📱 Device 2
+                    </div>
+
+                    <div class="device-ip">
+                        IP information unavailable
+                    </div>
+                </div>
+
+                <span class="online">
+                    ONLINE
+                </span>
+
+            </div>
+
+
+            <div class="device-row">
+
+                <div>
+                    <div class="device-name">
+                        💻 Device 3
+                    </div>
+
+                    <div class="device-ip">
+                        IP information unavailable
+                    </div>
+                </div>
+
+                <span class="online">
+                    ONLINE
+                </span>
+
+            </div>
+
+            <p style="color:#8191a5;font-size:12px;">
+                Prototype mode: actual hotspot/router device
+                detection requires Android network access.
+            </p>
+
+            <button onclick="scanDevices()">
+                🔎 SCAN DEVICES
+            </button>
+
+        </div>
+
+
+        <!-- NEARBY NETWORKS -->
+
+        <div class="card">
+
+            <h2>📡 Nearby Wi-Fi / Hotspots</h2>
+
+            <div class="device-row">
+                <span>📶 Current Network</span>
+                <span class="online">CONNECTED</span>
+            </div>
+
+            <div class="device-row">
+                <span>📶 Network 2</span>
+                <span>AVAILABLE</span>
+            </div>
+
+            <div class="device-row">
+                <span>📶 Network 3</span>
+                <span>AVAILABLE</span>
+            </div>
+
+            <p style="color:#8191a5;font-size:12px;">
+                Real Wi-Fi scanning will be connected through
+                Android APIs later.
+            </p>
+
+        </div>
+
+
+        <!-- NETWORK HISTORY -->
+
+        <div class="card">
+
+            <h2>📊 Network History</h2>
+
+            <div id="historyList">
+
+                <p style="color:#8191a5;">
+                    No tests saved yet.
+                </p>
+
+            </div>
+
+            <button onclick="clearHistory()">
+                🗑 CLEAR HISTORY
+            </button>
+
+        </div>
+
+
+        <!-- REPORT -->
+
+        <div class="card">
+
+            <h2>📝 Network Problem Report</h2>
+
+            <p style="color:#8191a5;">
+                Found a network problem?
+            </p>
+
+            <button onclick="createReport()">
+                📋 CREATE NETWORK REPORT
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+        SUDIZZ BUILD • NETGUARD
+        <br>
+        Network Diagnostic System
+    </div>
+
+</div>
+
+
+<script>
+
+/* ================= INTRO ================= */
+
+setTimeout(function() {
+
+    document.getElementById("intro").style.display = "none";
+
+    document.getElementById("app").style.display = "block";
+
+}, 3300);
+
+
+/* ================= NETWORK TEST ================= */
+
+async function runNetworkTest() {
+
+    document.getElementById("diagnosis").innerText =
+        "Testing your network...";
+
+    document.getElementById("ping").innerText =
+        "Testing...";
+
+    document.getElementById("loss").innerText =
+        "Testing...";
+
+
+    /* PING */
+
+    let start = performance.now();
+
+    try {
+
+        await fetch(
+            "https://www.google.com/generate_204",
+            {
+                mode: "no-cors",
+                cache: "no-store"
+            }
+        );
+
+        let pingTime =
+            Math.round(performance.now() - start);
+
+        document.getElementById("ping").innerText =
+            pingTime + " ms";
+
+    } catch {
+
+        document.getElementById("ping").innerText =
+            "Failed";
+
+    }
+
+
+    /* PACKET LOSS */
+
+    let failed = 0;
+    let total = 5;
+
+    for (let i = 0; i < total; i++) {
+
+        try {
+
+            await fetch(
+                "https://www.google.com/generate_204",
+                {
+                    mode: "no-cors",
+                    cache: "no-store"
+                }
+            );
+
+        } catch {
+
+            failed++;
+
+        }
+
+    }
+
+    let loss =
+        Math.round((failed / total) * 100);
+
+    document.getElementById("loss").innerText =
+        loss + " %";
+
+
+    /* DEMO SPEED VALUES */
+
+    let downloadSpeed =
+        (Math.random() * 25 + 5).toFixed(1);
+
+    let uploadSpeed =
+        (Math.random() * 10 + 2).toFixed(1);
+
+    document.getElementById("download").innerText =
+        downloadSpeed + " Mbps";
+
+    document.getElementById("upload").innerText =
+        uploadSpeed + " Mbps";
+
+
+    /* SCORE */
+
+    let pingText =
+        document.getElementById("ping").innerText;
+
+    let pingValue =
+        parseInt(pingText);
+
+    let score = 100;
+
+    if (!isNaN(pingValue)) {
+
+        if (pingValue > 150)
+            score -= 20;
+
+        if (pingValue > 250)
+            score -= 20;
+
+    }
+
+    score -= loss * 2;
+
+    if (score < 0)
+        score = 0;
+
+
+    document.getElementById("healthScore").innerText =
+        score;
+
+
+    /* DIAGNOSIS */
+
+    if (loss > 0) {
+
+        document.getElementById("diagnosis").innerText =
+            "⚠️ Packet loss detected. Your connection may be unstable.";
+
+    }
+    else if (pingValue > 150) {
+
+        document.getElementById("diagnosis").innerText =
+            "⚠️ High latency detected. Your network may feel slow during gaming or calls.";
+
+    }
+    else {
+
+        document.getElementById("diagnosis").innerText =
+            "✅ Your network appears stable.";
+
+    }
+
+
+    /* SAVE */
+
+    saveHistory(
+        pingText,
+        loss,
+        downloadSpeed,
+        uploadSpeed,
+        score
+    );
+
+}
+
+
+/* ================= HISTORY ================= */
+
+function saveHistory(
+    ping,
+    loss,
+    download,
+    upload,
+    score
+) {
+
+    let history =
+        JSON.parse(
+            localStorage.getItem("netguard_history") || "[]"
+        );
+
+
+    history.unshift({
+
+        time: new Date().toLocaleString(),
+
+        ping: ping,
+
+        loss: loss + "%",
+
+        download: download + " Mbps",
+
+        upload: upload + " Mbps",
+
+        score: score
+
+    });
+
+
+    if (history.length > 10)
+        history.pop();
+
+
+    localStorage.setItem(
+        "netguard_history",
+        JSON.stringify(history)
+    );
+
+
+    showHistory();
+
+}
+
+
+/* ================= SHOW HISTORY ================= */
+
+function showHistory() {
+
+    let history =
+        JSON.parse(
+            localStorage.getItem("netguard_history") || "[]"
+        );
+
+    let box =
+        document.getElementById("historyList");
+
+
+    if (history.length === 0) {
+
+        box.innerHTML =
+            '<p style="color:#8191a5;">No tests saved yet.</p>';
+
+        return;
+
+    }
+
+
+    box.innerHTML = "";
+
+
+    history.forEach(function(item) {
+
+        let row =
+            document.createElement("div");
+
+        row.className =
+            "history-row";
+
+
+        row.innerHTML = `
+
+            <div class="history-time">
+                ${item.time}
+            </div>
+
+            <div>
+                Ping: <b>${item.ping}</b>
+            </div>
+
+            <div>
+                Packet Loss: <b>${item.loss}</b>
+            </div>
+
+            <div>
+                Download: <b>${item.download}</b>
+            </div>
+
+            <div>
+                Upload: <b>${item.upload}</b>
+            </div>
+
+            <div>
+                Health Score:
+                <b>${item.score}/100</b>
+            </div>
+
+        `;
+
+
+        box.appendChild(row);
+
+    });
+
+}
+
+
+/* ================= CLEAR HISTORY ================= */
+
+function clearHistory() {
+
+    localStorage.removeItem(
+        "netguard_history"
+    );
+
+    showHistory();
+
+}
+
+
+/* ================= DEVICE SCAN ================= */
+
+function scanDevices() {
+
+    alert(
+        "📱 Android device scanning will be connected in the native Android version.\n\n" +
+        "The current Acode prototype cannot directly access your hotspot's connected-device list."
+    );
+
+}
+
+
+/* ================= REPORT ================= */
+
+function createReport() {
+
+    let score =
+        document.getElementById("healthScore").innerText;
+
+    let ping =
+        document.getElementById("ping").innerText;
+
+    let loss =
+        document.getElementById("loss").innerText;
+
+
+    alert(
+
+        "NETGUARD NETWORK REPORT\n\n" +
+
+        "Health Score: " + score + "/100\n" +
+
+        "Ping: " + ping + "\n" +
+
+        "Packet Loss: " + loss + "\n\n" +
+
+        "Report created successfully."
+
+    );
+
+}
+
+
+/* ================= LOAD HISTORY ================= */
+
+showHistory();
+
+</script>
+
+</body>
+</html>
